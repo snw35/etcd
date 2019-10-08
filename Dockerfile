@@ -21,6 +21,9 @@ RUN apk --update --no-cache add \
     bash \
   && chmod +x /docker-entrypoint.sh
 
+# Bug - https://github.com/etcd-io/etcd/issues/11210
+ENV ETCD_VERSION ""
+
 EXPOSE 2379 2380 4001 7001
 
 VOLUME /etcd_data
