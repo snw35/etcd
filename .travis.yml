@@ -1,17 +1,25 @@
 services: docker
 language: bash
-
-# Only build tags
-if: tag IS present
-
 install:
-  - git clone https://github.com/docker-library/official-images.git ~/official-images
+- git clone https://github.com/docker-library/official-images.git ~/official-images
 
 before_script:
   - env | sort
-  - IMAGE="${TRAVIS_REPO_SLUG}:${TRAVIS_TAG}"
+  - docker run -it --rm --name nvchecker --mount type=bind,source=${PWD},target=/data/ -w /data -e NVCHECKER_GITHUB_TOKEN=${GH_TOKEN} snw35/nvchecker:latest nvchecker nvchecker.ini
+  - docker run -it --rm --name dfupdate --mount type=bind,source=${PWD},target=/data/ -w /data snw35/dfupdate:latest
+  - if [[ $(git status --porcelain | wc -l) -eq 0 ]]; then
+      echo "No local changes detected, nothing to build, exiting.";
+      travis_terminate 0;
+    else
+      echo "Local changes detected, continuing...";
+      cp new_ver.txt old_ver.txt;
+    fi
 
 script:
+  - ETCD_VERSION=`grep "ENV ETCD_VERSION" Dockerfile | cut -d " " -f 3 | head -n 1`
+  - BASE_VERSION=`grep "FROM" Dockerfile | cut -d " " -f 2 | cut -d ":" -f 2`
+  - IMAGE="${TRAVIS_REPO_SLUG}:${ETCD_VERSION}"
+  - env | sort
   - travis_retry docker build -t "$IMAGE" .
   - ~/official-images/test/run.sh "$IMAGE" || travis_terminate 1;
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
@@ -21,3 +29,34 @@ script:
 
 after_script:
   - docker images
+
+before_deploy:
+  - git config --local user.name "${DOCKER_USERNAME}"
+  - git config --local user.email "snw35@use.startmail.com"
+  - git remote add upstream https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git >
+    /dev/null 2>&1
+  - git checkout master
+  - git add -A
+  - git commit --message "Software Updated"
+  - TRAVIS_TAG=${ETCD_VERSION}-${BASE_VERSION}
+  - git tag $TRAVIS_TAG
+  - git push --quiet --set-upstream upstream
+  - git push --tags --quiet --set-upstream upstream
+
+deploy:
+  provider: releases
+  api_key: "$GH_TOKEN"
+  skip_cleanup: true
+  body: 'base image version: $BASE_VERSION
+    etcd version: $ETCD_VERSION
+    image deployed: $IMAGE'
+
+branches:
+  except:
+  - "/^untagged/"
+
+env:
+  global:
+  - secure: jTNRdkIPbIiIuJ5xDBDyHD/IBSMpIV5/3b4FDakY9vVdBi3EiWeiq/TomBOC+5DUUPSMJ2dW9gksXlX/FYZFzI8+ACSNYPlHfTO5EnslLXcXl70HVcYvBxI/T4mMzloyf6OPp7d6pjIO84zEeF/NWnu6MyX7w8Gr2rlbRIPkXY1+8bYXUrEgvFXS+Zx0LbVaNFRfCvJHrtmGe3R+ikkSCpyMb8/Z2FbFyVsWh2IQspnNiEs/yVkQ/BPNv+YKyy8bqwoFAK9HTNC2/SiRhpwX2lM78F3RWG4PtF74chXKqswqvLlXyA61Qfm/15QUNEc09ZcHM6MI9wYmE9LVuFybKZMuPy2cfrBsOX2NS3nuMlg+b9NGSIbt0ytXHa8xJbH6yylu328Dfln7Eq9c9ZtiotO8G11q3nTDJ6gWlXdOp6woHYzIm5aqYrfyHoi2Yemsi4aLowRhMZ/5txnHnF3Drctknja1ml5LIBGPeeyKF3O2d712ie2BMePAr9gOw4Qu8d79WklPT4hAi5cegXNk9GLjeub03UhXGXAAYA5EE2kjpEUvfqRLUnDFEj+Uc6FxF56+iKW6KEd9pAroOX5xTf9Aromc4GIrIJnqXxHNocCI+9YmO9V5Wf3nL4Ul3U9F+zVqyULzjjRAdWN54bSRojSgw45yFp1PYCGWJX2QVGE=
+  - secure: VPJTi4YZcSeMtMmCsc6XgkCPx2btGdDfoOoPYo92kIJSdC88tut0UcjHURrEm2c1rhuwhybmVVXY8yyMaW7ewsgGRo+WTaEVfs4cv/aukLrHZqH1NbbpWChWulPxDzdjjf52oIept01fm6LYCJ+NYCpTOYykXRCbiFSgJ9mSvE/lForUa+qh0xhbLzm4TmtZpeYbHd960slFKa+zPBTQE/VyFsA3s8YDPhCsj6C6ig7Jv6lydrDUkwSHsHg3apPweVxLBnzalVUfkfLIcmUn1TKuJn/uW0iVaHKxUGyNYoEA0tFAEKZBKWktJAEBics7XKWUFVck6TaUBjs9SdNnhAiV5Fgc3GbFlTyeQHe06fNWuYcvF4ww/5XA6FbB19b+fySA4q0ntgM1ozSxVpu5iX3buHZTYCfBjvTBZkDfjilIz0zzS6dYHNIgyB9XMKZykWX2JZyPWwACxfha1ZQQJH2JsEHLlKbT9OYTj3Mcw6Azly1/CMAkrqYLwSdTMh8d4diJtbMYWlDtB3+jl9IKF2pEMQNlvvexpVH+Tg5CdAnLhHDQvPNJAzgZf/4XwWgfwibHwb5c2j5XVO0QsW9daVv1s2R0LU0ZkzOIoDXNfhxp5YGa8vSan0MjjVFTcYZXY8MYSX+uOW7P322Td4Ukc30VQWVOkWwBMJFh3Q/q6Pg=
+  - secure: WleqoVRK0oTWm0Vk1UVi3mkGTs45NnEEQpdjZBZxJ1XheRfb3fp+uiTKYdWCrtM+IgZqJ9WEobOqI9Za2oK3d4IcvIDVfwflBeSIyrON2QOt4Ojv6MZnL9NcnnZJnPV+0I9A77UQwJJeonZHRT6IFMOpRFrpynteajLGQ/DP1kkOlNFTjRnF1sGyyevfTKn0cDpKks82D62EsO+8FQb7lYBW4JV76TWjVDyHJWLko5fY61dmePqF7UcJbpYMgLH3DFj51aWJKiXL/g1uCgVPYGkOLUFgs8kAL5YnOaP7sIOW5mB27Lirl05SWGuG7lhXm96M1eKwmoi6NKroldGuhqpXeC1NvqngnQIiwdSGeoZIkVjSRzyL1bv9NykpoGT+inoF8plkytTHU1Ocsrz6ClIKekmPkCAejhjaFDcSuZfH7zKPTPF1s33+EndcwYlnvKVOx2qPs+7A/ZASyeIRVLN8GBi/cXDwhDYLxeU0JhAjV8faGup6MVYn3ilfCJCx7pE0XdiC7owjlvMbfq/Sdb9qvOzVao/TfEL11Ci+KkOdu0c9Z0E09K9NLYK08GCgNSrEfzMM4+FPJnZ8lDuN4+JpzuTmY9UBtj5FxXGJInYU+J+82q0gmapJBIu/rYF5wL9nYaxK3d5DHVNOCl8I0BnFoBd6G9r5uZ3jbX2Nqvo=
