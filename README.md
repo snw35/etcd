@@ -3,7 +3,9 @@
 * [Travis CI: ![Build Status](https://travis-ci.org/snw35/etcd.svg?branch=master)](https://travis-ci.org/snw35/etcd)
 * [Dockerhub: snw35/etcd](https://hub.docker.com/r/snw35/etcd)
 
-etcd container, automatically updated daily.
+etcd container, updated daily.
+
+**NOTE:** for etcd versions 3.4.2 and below, you will need to set ETCD_VERSION to an empty string (or unset it) at runtime or etcd will exit on startup: https://github.com/etcd-io/etcd/issues/11210
 
 ## How To Use
 
@@ -36,6 +38,8 @@ services:
       - etcd1:/etcd_data
     networks:
       - etcd
+    environment:
+      - ETCD_VERSION=""
 
   etcd-2:
     container_name: etcd2
@@ -60,6 +64,8 @@ services:
       - etcd2:/etcd_data
     networks:
       - etcd
+    environment:
+      - ETCD_VERSION=""
 
   etcd-3:
     container_name: etcd3
@@ -84,6 +90,8 @@ services:
       - etcd3:/etcd_data
     networks:
       - etcd
+    environment:
+      - ETCD_VERSION=""
 
 volumes:
   etcd1:
