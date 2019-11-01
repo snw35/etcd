@@ -3,7 +3,7 @@
 * [Travis CI: ![Build Status](https://travis-ci.org/snw35/etcd.svg?branch=master)](https://travis-ci.org/snw35/etcd)
 * [Dockerhub: snw35/etcd](https://hub.docker.com/r/snw35/etcd)
 
-etcd container, updated daily.
+Self-updating etcd container.
 
 **NOTE:** for etcd versions 3.4.2 and below, you will need to set ETCD_VERSION to an empty string (or unset it) at runtime or etcd will exit on startup: https://github.com/etcd-io/etcd/issues/11210
 

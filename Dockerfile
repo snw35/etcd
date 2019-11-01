@@ -13,7 +13,9 @@ RUN wget $ETCD_URL/$ETCD_FILENAME \
   && mv ./etcd-v${ETCD_VERSION}-linux-amd64/etcd /usr/bin/etcd \
   && mv ./etcd-v${ETCD_VERSION}-linux-amd64/etcdctl /usr/bin/etcdctl \
   && rm -rf ./etcd-v${ETCD_VERSION}-linux-amd64 \
-  && rm -f ./${ETCD_FILENAME}
+  && rm -f ./${ETCD_FILENAME} \
+  && etcd --help \
+  && etcdctl --help
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 
