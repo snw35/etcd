@@ -39,7 +39,7 @@ services:
     networks:
       - etcd
     environment:
-      - ETCD_VERSION=""
+      - ETCD_VERSION=
 
   etcd-2:
     container_name: etcd2
@@ -65,7 +65,7 @@ services:
     networks:
       - etcd
     environment:
-      - ETCD_VERSION=""
+      - ETCD_VERSION=
 
   etcd-3:
     container_name: etcd3
@@ -91,7 +91,7 @@ services:
     networks:
       - etcd
     environment:
-      - ETCD_VERSION=""
+      - ETCD_VERSION=
 
 volumes:
   etcd1:
