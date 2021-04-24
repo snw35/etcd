@@ -7,3 +7,4 @@ source = "github"
 github = "etcd-io/etcd"
 use_max_tag = true
 prefix = "v"
+exclude_regex = ".*(alpha|beta).*"
