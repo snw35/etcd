@@ -1,6 +1,6 @@
 # etcd
 
-* [Travis CI: ![Build Status](https://travis-ci.org/snw35/etcd.svg?branch=master)](https://travis-ci.org/snw35/etcd)
+* [Travis CI: ![Build Status](https://travis-ci.com/snw35/etcd.svg?branch=master)](https://travis-ci.com/github/snw35/etcd)
 * [Dockerhub: snw35/etcd](https://hub.docker.com/r/snw35/etcd)
 
 Self-updating etcd container.
