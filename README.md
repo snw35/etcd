@@ -1,11 +1,9 @@
 # etcd
 
-* [Travis CI: ![Build Status](https://travis-ci.com/snw35/etcd.svg?branch=master)](https://travis-ci.com/github/snw35/etcd)
+* ![Build Status](https://github.com/snw35/etcd/actions/workflows/update.yml/badge.svg)
 * [Dockerhub: snw35/etcd](https://hub.docker.com/r/snw35/etcd)
 
 Self-updating etcd container.
-
-**NOTE:** for etcd versions 3.4.2 and below, you will need to set ETCD_VERSION to an empty string (or unset it) at runtime or etcd will exit on startup: https://github.com/etcd-io/etcd/issues/11210
 
 ## How To Use
 
@@ -101,3 +99,5 @@ volumes:
 networks:
   etcd:
 ```
+
+**NOTE:** for etcd versions 3.4.2 and below, you will need to set ETCD_VERSION to an empty string (or unset it) at runtime or etcd will exit on startup: https://github.com/etcd-io/etcd/issues/11210
