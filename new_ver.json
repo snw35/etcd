@@ -2,7 +2,7 @@
   "version": 2,
   "data": {
     "BASE": {
-      "version": "3.22.1"
+      "version": "3.22.2"
     },
     "ETCD": {
       "version": "3.6.5",
