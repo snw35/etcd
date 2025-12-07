@@ -1,4 +1,4 @@
-FROM alpine:3.22.2
+FROM alpine:3.23.0
 
 ENV ETCD_VERSION 3.6.6
 ENV ETCD_URL https://github.com/etcd-io/etcd/releases/download/v${ETCD_VERSION}
