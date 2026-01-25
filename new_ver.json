@@ -2,13 +2,13 @@
   "version": 2,
   "data": {
     "BASE": {
-      "version": "3.23.0"
+      "version": "3.23.2"
     },
     "ETCD": {
-      "version": "3.6.6",
-      "gitref": "refs/tags/v3.6.6",
-      "revision": "86c5c22f6c84582bee4c18fc4571b159be50e595",
-      "url": "https://github.com/etcd-io/etcd/releases/tag/v3.6.6"
+      "version": "3.6.7",
+      "gitref": "refs/tags/v3.6.7",
+      "revision": "0171900fe4406f3db422b27731dbd7498595d192",
+      "url": "https://github.com/etcd-io/etcd/releases/tag/v3.6.7"
     }
   }
 }
