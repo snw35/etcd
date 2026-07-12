@@ -5,10 +5,10 @@
       "version": "3.24.1"
     },
     "ETCD": {
-      "version": "3.7.0-rc.0",
-      "gitref": "refs/tags/v3.7.0-rc.0",
-      "revision": "048fa391774ebc9112d7c5419ba38f1be47af9b1",
-      "url": "https://github.com/etcd-io/etcd/releases/tag/v3.7.0-rc.0"
+      "version": "3.7.0",
+      "gitref": "refs/tags/v3.7.0",
+      "revision": "4c01784987adbc0471177fbcebb5b21b53c80f06",
+      "url": "https://github.com/etcd-io/etcd/releases/tag/v3.7.0"
     }
   }
 }
