@@ -1,9 +1,9 @@
 FROM alpine:3.24.4
 
-ENV ETCD_VERSION 3.7.3
+ENV ETCD_VERSION 3.7.4
 ENV ETCD_URL https://github.com/etcd-io/etcd/releases/download/v${ETCD_VERSION}
 ENV ETCD_FILENAME etcd-v${ETCD_VERSION}-linux-amd64.tar.gz
-ENV ETCD_SHA256 5dfa9cc3b3ce3b4b491fbcc2057d3daa166bcc6676f743fcd20f8e5760cb9775
+ENV ETCD_SHA256 a0d47d07d081c12611fe69dc81a16ae8dd758401c0fe3a83d508823a1dac558e
 
 RUN wget $ETCD_URL/$ETCD_FILENAME \
   && echo "$ETCD_SHA256  ./$ETCD_FILENAME" | sha256sum -c - \
